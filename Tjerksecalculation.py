@@ -4,12 +4,11 @@ Equations employed below are from "Zenith of the Quantum Doctrine:
 N.B: Some equations have been rewritten for better precision
 
 ATTENTION: > PI-PHASE SHIFT/ SUPERPOSITION BRANCH MISSING
-           > CODE REVIEW MUST TAKE PLACE BEFORE MADE PUBLIC
 
 User instructions: adjust the physical parameters below and run the script
 
 Author: Joao Machado
-Date: 07-06-20
+Date: 01-04-24
 """
 
 import numpy as np
@@ -18,26 +17,8 @@ from copy import deepcopy
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import logging
-
-# Physical parameters; choice of global variables was to avoid excessive variables in functions
-
-Omega: 'angular mechanical frequency 2*pi f in Hertz' = 2 * np.pi * 3000
-Lambda: 'freq. dif. between the bare and the shifted mechanical frequencies in Hertz' = 2 * np.pi * 0.045
-N_thermal: 'phonon thermal bath occupancy' = 0  # you can change it to temperature and compute N_thermal from it instead
-Q: 'mechanical quality factor (f/Gamma)' = np.inf  # 1e5
-T2: 'dephasing rate in s' = 1e12  # 0.1
-beta: 'amplitude of cantilever motion in ZPM units' = 1e5
-N_imp: 'initial phonon number uncertainty; assumed = to imprecision noise' = 0  # 760
-nc: 'number of cycles between each pulse' = 5
-epsilon: 'qubit angular frequency in Hertz' = 0  # 2 * np.pi * 6e9  # I don't recall the value; please check later
-
-# Auxiliary parameters
-Delta = np.sqrt(0.5 * (N_imp + 0.5))  # position uncertainty of the initial mechanical Gaussian state in ZPM units
-Tau = 2 * np.pi * nc / Omega  # time lapse between cycles; total duration of the experiment = 3Tau
-Gamma = Omega / (2 * np.pi * Q)  # mechanical damping rate
-Xi = np.sqrt(Gamma ** 2 - 4 * Lambda ** 2 + 8j * Gamma * Lambda * (N_thermal + 0.5))  # aux. param; cf. thesis eq.(3.71)
-hM = (Xi - Gamma) / (2 * Gamma * (N_thermal + 0.5) + 1j * Lambda)  # aux. param; cf. thesis eq.(3.71)
-hm = (-Xi - Gamma) / (2 * Gamma * (N_thermal + 0.5) + 1j * Lambda)  # aux. param; cf. thesis eq.(3.71)
+import math
+# from Gaussian_Wigner_Class import GaussianSuperposition
 
 
 class GaussianSuperposition:
@@ -56,7 +37,7 @@ class GaussianSuperposition:
 
         if len(coef_list) != 3:
             raise Exception("State does not have the structure [[W_uu],[W_dd],[W_ud]].\n" +
-                            "Input state has list length = ", len(coef))
+                            "Input state has list length = ", len(coef_list))
 
         uu_coefarray = np.asarray(coef_list[0])  # in case of input as lists; 'shape' attribute is necessary
         dd_coefarray = np.asarray(coef_list[1])
@@ -85,7 +66,7 @@ class GaussianSuperposition:
 
         # remove the artificial no_peak instances from the list
         if np.isfinite(c):
-            peak_magnitude = np.abs(np.exp(c - k * q / g) * np.sqrt(-np.pi / g))
+            peak_magnitude = np.abs(np.exp(c - k * q / g) * (-np.pi / g))  # -> make magnitude relative integer
             peak_position = - np.real((k + q) / (2 * g))
             peak_width = np.sqrt(-1 / (2 * np.real(g)))
             peak_phase = np.imag(c - k * q / g - 0.5 * np.log(-g)) % (2 * np.pi)
@@ -101,9 +82,19 @@ class GaussianSuperposition:
         # diagnostics function to monitor the quantum state
 
         if mode == 'plain':
-            print('uu coefficients =', self.uu)
-            print('dd coefficients =', self.dd)
-            print('ud coefficients =', self.ud)
+            np.set_printoptions(precision=2)
+
+            for coef in self.uu:
+                if not math.isinf(np.real(coef[3])):
+                    print('uu coefficient = ', coef)
+                    """
+            for coef in self.dd:
+                if not math.isinf(np.real(coef[3])):
+                    print('dd coefficient = ', coef)
+            for coef in self.ud:
+                if not math.isinf(np.real(coef[3])):
+                    print('ud coefficient = ', coef)
+                    """
 
         elif mode == 'informative':
 
@@ -111,22 +102,22 @@ class GaussianSuperposition:
             for peak in self.uu:
                 peak_magnitude, peak_position, peak_width, peak_phase = self.peak_info(peak)
                 if peak_magnitude > 1e-10:  # ignore the fast decaying peaks
-                    logging.info('Peak at x = %3.3f,  with phase = %1.3f, and magnitude = %3.3f', peak_position,
-                                 peak_phase, peak_magnitude)
+                    logging.info('Peak at x = %3.3f,  with phase = %1.3f * pi, and magnitude = %3.3f', peak_position,
+                                 peak_phase / np.pi, peak_magnitude)
 
             logging.info('\nCoefficients for the (spin-down,spin-down) component:')
             for peak in self.dd:
                 peak_magnitude, peak_position, peak_width, peak_phase = self.peak_info(peak)
                 if peak_magnitude > 1e-10:
-                    logging.info('Peak at x = %3.3f,  with phase = %1.3f, and magnitude = %3.3f', peak_position,
-                                 peak_phase, peak_magnitude)
+                    logging.info('Peak at x = %3.3f,  with phase = %1.3f * pi, and magnitude = %3.3f', peak_position,
+                                 peak_phase / np.pi, peak_magnitude)
 
             logging.info('\nCoefficients for the (spin-up,spin-down) component:')
             for peak in self.ud:
                 peak_magnitude, peak_position, peak_width, peak_phase = self.peak_info(peak)
                 if peak_magnitude > 1e-10:
-                    logging.info('Peak at x = %3.3f,  with phase = %1.3f, and magnitude = %3.3f', peak_position,
-                                 peak_phase, peak_magnitude)
+                    logging.info('Peak at x = %3.3f,  with phase = %1.3f * pi, and magnitude = %3.3f', peak_position,
+                                 peak_phase / np.pi, peak_magnitude)
 
             logging.info('\nState normalisation = %1.5f\n', self.state_norm())
 
@@ -146,7 +137,7 @@ class GaussianSuperposition:
                 # g<0 (k[0]<0), so -= contributes with a positive amount
                 norm -= np.exp(k[3] - k[1] * k[2] / k[0]) / k[0]
 
-        # since coefficients are complex, norm is also complex
+        # since coefficients are complex, norm is also complex but with negligible imaginary part
         if np.abs(np.imag(norm)) > 1e-12:
             raise Exception('State norm should be real valued. Norm = ', np.pi * norm)
 
@@ -191,6 +182,14 @@ class GaussianSuperposition:
         quu = (coef[2] * np.exp(-0.5 * Gamma * t - 1j * (Omega + Lambda) * t)) / dif_term
         cuu = coef[3] - np.log(dif_term) + coef[2] * coef[1] * (N_thermal + 0.5) * (1 - np.exp(-Gamma * t)) / dif_term
 
+        if not math.isinf(np.real(coef[3])):
+            print("diff = ", dif_term)
+            print("guu = ", guu)
+            print("kuu = ", kuu)
+            print("quu = ", quu)
+            print("coef1 = ", coef[1])
+            print("coef2 = ", coef[2])
+
         return np.array([guu, kuu, quu, cuu])
 
     def update_coef_dd(self, t, coef):
@@ -228,7 +227,13 @@ class GaussianSuperposition:
 
         # W_uu update
         for j, branch in enumerate(self.uu):
-            self.uu[j] = self.update_coef_uu(t, branch)
+            new_branch = self.update_coef_uu(t, branch)
+
+            if not math.isinf(np.real(branch[3])):
+                print("evolving branch = ", branch)
+                print("new branch =", new_branch)
+
+            self.uu[j] = new_branch
 
         # W_dd update
         for j, branch in enumerate(self.dd):
@@ -374,6 +379,32 @@ class GaussianSuperposition:
 
         return prob_dist
 
+    # def state_space(self, plot=False):
+        # evaluates the Wigner function over phase-space
+        # TO DO
+
+
+# Physical parameters; choice of global variables was to avoid excessive variables in functions
+
+
+Omega: 'angular mechanical frequency 2*pi f in Hertz' = 2 * np.pi * 3000
+Lambda: 'freq. dif. between the bare and the shifted mechanical frequencies in Hertz' = 2 * np.pi * 0.0045
+N_thermal: 'phonon thermal bath occupancy' = 0  # you can change it to temperature and compute N_thermal from it instead
+Q: 'mechanical quality factor (f/Gamma)' = np.inf  # 1e5
+T2: 'dephasing rate in s' = 1e30  # 0.1
+beta: 'amplitude of cantilever motion in ZPM units' = 1e5
+N_imp: 'initial phonon number uncertainty; assumed = to imprecision noise' = 0  # 760
+n_cycles: 'number of cycles between each pulse' = 5
+epsilon: 'qubit angular frequency in Hertz' = 0  # 2 * np.pi * 6e9  # I don't recall the value; please check later
+
+# Auxiliary parameters
+Delta = np.sqrt(0.5 * (N_imp + 0.5))  # position uncertainty of the initial mechanical Gaussian state in ZPM units
+Tau = 2 * np.pi * n_cycles / Omega  # time lapse between cycles; total duration of the experiment = 3Tau
+Gamma = Omega / (2 * np.pi * Q)  # mechanical damping rate
+Xi = np.sqrt(Gamma ** 2 - 4 * Lambda ** 2 + 8j * Gamma * Lambda * (N_thermal + 0.5))  # aux. param; cf. thesis eq.(3.71)
+hM = (Xi - Gamma) / (2 * Gamma * (N_thermal + 0.5) + 1j * Lambda)  # aux. param; cf. thesis eq.(3.71)
+hm = (-Xi - Gamma) / (2 * Gamma * (N_thermal + 0.5) + 1j * Lambda)  # aux. param; cf. thesis eq.(3.71)
+
 
 # create a logfile to monitor each step of the experiment
 logging.basicConfig(filename="InterferenceExperimentLog.log", level=logging.INFO, filemode='w', format='%(message)s')
@@ -403,7 +434,7 @@ def interference_experiment():
     logging.info("Dephasing time T_2 = %1.2e s\n", T2)
     logging.info("Amplitude of cantilever motion = %1.2e (ZPM units)\n", beta)
     logging.info("Initial phonon number uncertainty = %3.1f \n", N_imp)
-    logging.info("Number of cycles between each pulse = %1.1f \n", nc)
+    logging.info("Number of cycles between each pulse = %1.1f \n", n_cycles)
     logging.info("Qubit frequency = %1.2e Hz\n", epsilon / (2 * np.pi))
     logging.info(log_section("Start of the interference experiment.\n"))
 
@@ -420,45 +451,57 @@ def interference_experiment():
     no_peak = [-1, 0 + 0j, 0 + 0j, np.NINF + 0j]
 
     # initial state
+    print("Initial State")
     q_state = GaussianSuperposition([[initial_gaussian], [no_peak], [no_peak]])
     log_record = 'Initial Gaussian state'
     logging.info(log_section(log_record))
     q_state.diagnostics()
+    # q_state.diagnostics(mode='plain')
 
     # send a pi/2 pulse to create the initial superposition state
+    print("\n 1st pi/2")
     q_state.pi_over2_pulse()
     log_record = 'Apply the 1st pi/2 pulse to create a superposition state.'
     logging.info(log_section(log_record))
     q_state.diagnostics()
+    # q_state.diagnostics(mode='plain')
 
     # let it evolve in order for the superposition to be physically separated
+    print("\n free evolution")
     q_state.evolve(Tau)
-    log_record = 'Free evolution. After ' + str(nc) + ' cycles, the quantum state becomes:'
+    log_record = 'Free evolution. After ' + str(n_cycles) + ' cycles, the quantum state becomes:'
     logging.info(log_section(log_record))
     q_state.diagnostics()
+    # q_state.diagnostics(mode='plain')
 
     # send another pi/2 pulse to divide each superposition branch into 2
+    print("\n 2nd pi/2")
     q_state.pi_over2_pulse()
     log_record = 'Apply the 2nd pi/2 pulse to subdivide the superposition state.'
     logging.info(log_section(log_record))
     q_state.diagnostics()
+    q_state.diagnostics(mode='plain')
 
     # let it evolve again so 2 of the branches meet at the same point
     # no interference because they are entangled with different spin components
+    print("\n free evolution")
     q_state.evolve(Tau)
-    log_record = '2nd free evolution. After another ' + str(nc) + ' cycles, the quantum state becomes:'
+    log_record = '2nd free evolution. After another ' + str(n_cycles) + ' cycles, the quantum state becomes:'
     logging.info(log_section(log_record))
     q_state.diagnostics()
+    q_state.diagnostics(mode='plain')
 
     # send the final pi/2 pulse to produce the desired interference
+    print("\n 3rd pi/2")
     q_state.pi_over2_pulse()
     log_record = 'Apply the 3rd and final pi/2 pulse to be have a which-path experiment.'
     logging.info(log_section(log_record))
     q_state.diagnostics()
 
     # let it evolve for another time interval in order for the superposition branches to meet and interfere
+    print("\n free evolution")
     q_state.evolve(Tau)
-    log_record = 'Final free evolution for ' + str(nc) + ' cycles. The state is now:'
+    log_record = 'Final free evolution for ' + str(n_cycles) + ' cycles. The state is now:'
     logging.info(log_section(log_record))
     q_state.diagnostics()
 

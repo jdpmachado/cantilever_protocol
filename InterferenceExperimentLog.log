@@ -1,0 +1,193 @@
+Running the interferometry experiment with the parameters:
+
+Mechanical frequency f = (Omega/2pi) = 3.00e+03 Hz
+
+Mechanical frequency difference (coupling) = 4.50e-03 Hz
+
+Phonon thermal bath occupancy = 0.0 
+
+Mechanical quality factor (f/Gamma) = inf 
+
+Dephasing time T_2 = 1.00e+30 s
+
+Amplitude of cantilever motion = 1.00e+05 (ZPM units)
+
+Initial phonon number uncertainty = 0.0 
+
+Number of cycles between each pulse = 5.0 
+
+Qubit frequency = 0.00e+00 Hz
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%	Start of the interference experiment.
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%	Initial Gaussian state
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Coefficients for the (spin-up,spin-up) component:
+Peak at x = 0.000,  with phase = 0.000 * pi, and magnitude = 1.000
+
+Coefficients for the (spin-down,spin-down) component:
+
+Coefficients for the (spin-up,spin-down) component:
+
+State normalisation = 1.00000
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%	Apply the 1st pi/2 pulse to create a superposition state.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Coefficients for the (spin-up,spin-up) component:
+Peak at x = 0.000,  with phase = 0.000 * pi, and magnitude = 0.500
+
+Coefficients for the (spin-down,spin-down) component:
+Peak at x = 0.000,  with phase = 0.000 * pi, and magnitude = 0.500
+
+Coefficients for the (spin-up,spin-down) component:
+Peak at x = 0.000,  with phase = 0.500 * pi, and magnitude = 0.500
+
+State normalisation = 1.00000
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%	Free evolution. After 5 cycles, the quantum state becomes:
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Coefficients for the (spin-up,spin-up) component:
+Peak at x = 4.712,  with phase = 0.000 * pi, and magnitude = 0.500
+
+Coefficients for the (spin-down,spin-down) component:
+Peak at x = -4.712,  with phase = 0.000 * pi, and magnitude = 0.500
+
+Coefficients for the (spin-up,spin-down) component:
+
+State normalisation = 1.00000
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%	Apply the 2nd pi/2 pulse to subdivide the superposition state.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Coefficients for the (spin-up,spin-up) component:
+Peak at x = 4.712,  with phase = 0.000 * pi, and magnitude = 0.250
+Peak at x = -4.712,  with phase = 0.000 * pi, and magnitude = 0.250
+
+Coefficients for the (spin-down,spin-down) component:
+Peak at x = 4.712,  with phase = 0.000 * pi, and magnitude = 0.250
+Peak at x = -4.712,  with phase = 0.000 * pi, and magnitude = 0.250
+
+Coefficients for the (spin-up,spin-down) component:
+Peak at x = 4.712,  with phase = 0.500 * pi, and magnitude = 0.250
+Peak at x = -4.712,  with phase = 1.500 * pi, and magnitude = 0.250
+
+State normalisation = 1.00000
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%	2nd free evolution. After another 5 cycles, the quantum state becomes:
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Coefficients for the (spin-up,spin-up) component:
+Peak at x = 9.425,  with phase = 0.000 * pi, and magnitude = 0.250
+Peak at x = 0.000,  with phase = 0.000 * pi, and magnitude = 0.250
+
+Coefficients for the (spin-down,spin-down) component:
+Peak at x = 0.000,  with phase = 0.000 * pi, and magnitude = 0.250
+Peak at x = -9.425,  with phase = 0.000 * pi, and magnitude = 0.250
+
+Coefficients for the (spin-up,spin-down) component:
+Peak at x = 0.000,  with phase = 1.500 * pi, and magnitude = 0.250
+
+State normalisation = 1.00000
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%	Apply the 3rd and final pi/2 pulse to be have a which-path experiment.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Coefficients for the (spin-up,spin-up) component:
+Peak at x = 9.425,  with phase = 0.000 * pi, and magnitude = 0.125
+Peak at x = 0.000,  with phase = 0.000 * pi, and magnitude = 0.125
+Peak at x = 0.000,  with phase = 0.000 * pi, and magnitude = 0.125
+Peak at x = -9.425,  with phase = 0.000 * pi, and magnitude = 0.125
+Peak at x = 0.000,  with phase = 2.000 * pi, and magnitude = 0.125
+Peak at x = 0.000,  with phase = 0.000 * pi, and magnitude = 0.125
+
+Coefficients for the (spin-down,spin-down) component:
+Peak at x = 9.425,  with phase = 0.000 * pi, and magnitude = 0.125
+Peak at x = 0.000,  with phase = 0.000 * pi, and magnitude = 0.125
+Peak at x = 0.000,  with phase = 0.000 * pi, and magnitude = 0.125
+Peak at x = -9.425,  with phase = 0.000 * pi, and magnitude = 0.125
+Peak at x = 0.000,  with phase = 1.000 * pi, and magnitude = 0.125
+Peak at x = 0.000,  with phase = 1.000 * pi, and magnitude = 0.125
+
+Coefficients for the (spin-up,spin-down) component:
+Peak at x = 9.425,  with phase = 0.500 * pi, and magnitude = 0.125
+Peak at x = 0.000,  with phase = 0.500 * pi, and magnitude = 0.125
+Peak at x = 0.000,  with phase = 1.500 * pi, and magnitude = 0.125
+Peak at x = -9.425,  with phase = 1.500 * pi, and magnitude = 0.125
+Peak at x = 0.000,  with phase = 1.500 * pi, and magnitude = 0.125
+Peak at x = 0.000,  with phase = 0.500 * pi, and magnitude = 0.125
+
+State normalisation = 1.00000
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%	Final free evolution for 5 cycles. The state is now:
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Coefficients for the (spin-up,spin-up) component:
+Peak at x = 14.137,  with phase = 0.000 * pi, and magnitude = 0.125
+Peak at x = 4.712,  with phase = 0.000 * pi, and magnitude = 0.125
+Peak at x = 4.712,  with phase = 0.000 * pi, and magnitude = 0.125
+Peak at x = -4.712,  with phase = 0.000 * pi, and magnitude = 0.125
+Peak at x = -4.712,  with phase = 2.000 * pi, and magnitude = 0.125
+Peak at x = 4.712,  with phase = 0.000 * pi, and magnitude = 0.125
+
+Coefficients for the (spin-down,spin-down) component:
+Peak at x = 4.712,  with phase = 0.000 * pi, and magnitude = 0.125
+Peak at x = -4.712,  with phase = 0.000 * pi, and magnitude = 0.125
+Peak at x = -4.712,  with phase = 0.000 * pi, and magnitude = 0.125
+Peak at x = -14.137,  with phase = 0.000 * pi, and magnitude = 0.125
+Peak at x = 4.712,  with phase = 1.000 * pi, and magnitude = 0.125
+Peak at x = -4.712,  with phase = 1.000 * pi, and magnitude = 0.125
+
+Coefficients for the (spin-up,spin-down) component:
+Peak at x = -4.712,  with phase = 1.500 * pi, and magnitude = 0.125
+Peak at x = 4.712,  with phase = 1.500 * pi, and magnitude = 0.125
+Peak at x = 4.712,  with phase = 1.500 * pi, and magnitude = 0.125
+Peak at x = -4.712,  with phase = 0.500 * pi, and magnitude = 0.125
+
+State normalisation = 1.00000
+
+
+End of experiment.
